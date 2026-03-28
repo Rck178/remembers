@@ -6,7 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
       body { margin: 0; overflow: hidden; }
-      /* Diseño del botón inicial para desbloquear el video */
       #btn-iniciar {
         position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
         z-index: 9999; padding: 12px 24px; background: rgba(0,0,0,0.8); color: #D4AF37;
@@ -14,6 +13,22 @@
         cursor: pointer;
       }
     </style>
+    
+    <script>
+      AFRAME.registerComponent('abrir-enlace', {
+        schema: { url: { default: '' } },
+        init: function () {
+          // Detecta el clic tradicional
+          this.el.addEventListener('click', () => {
+            window.location.href = this.data.url;
+          });
+          // Detecta el toque rápido en pantallas de celular (mucho más preciso)
+          this.el.addEventListener('touchstart', () => {
+            window.location.href = this.data.url;
+          });
+        }
+      });
+    </script>
   </head>
   <body>
     <button id="btn-iniciar">Tocar para Iniciar Experiencia</button>
@@ -22,22 +37,21 @@
       
       <a-assets>
         <video id="mivideo" src="video.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
-        
         <img id="icono-whatsapp" src="whatsapp.png" crossorigin="anonymous">
         <img id="icono-facebook" src="facebook.png" crossorigin="anonymous">
         <img id="icono-tiktok" src="tiktok.png" crossorigin="anonymous">
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false">
-        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-entity>
-      </a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-video src="#mivideo" position="0 0 0" width="1" height="1.5" rotation="0 0 0"></a-video>
         
-        <a-image id="btn-whatsapp" class="clickable" src="#icono-whatsapp" position="-0.35 -1.0 0.05" width="0.2" height="0.2"></a-image>
-        <a-image id="btn-facebook" class="clickable" src="#icono-facebook" position="0 -1.0 0.05" width="0.2" height="0.2"></a-image>
-        <a-image id="btn-tiktok" class="clickable" src="#icono-tiktok" position="0.35 -1.0 0.05" width="0.2" height="0.2"></a-image>
+        <a-image class="clickable" src="#icono-whatsapp" position="-0.4 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://wa.me/59163013102?text=¡Felicidades por el Logro!"></a-image>
+        
+        <a-image class="clickable" src="#icono-facebook" position="0 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://facebook.com/"></a-image>
+        
+        <a-image class="clickable" src="#icono-tiktok" position="0.4 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://tiktok.com/"></a-image>
       </a-entity>
     </a-scene>
 
@@ -45,23 +59,9 @@
       const btnIniciar = document.querySelector("#btn-iniciar");
       const video = document.querySelector("#mivideo");
 
-      // 1. Desbloquear video
       btnIniciar.addEventListener("click", function() {
         video.play();
         btnIniciar.style.display = "none";
-      });
-
-      // 2. Enlaces de Redes (Reemplaza con tus datos reales)
-      document.querySelector('#btn-whatsapp').addEventListener('click', function () {
-        window.location.href = 'https://wa.me/59177777777';
-      });
-
-      document.querySelector('#btn-facebook').addEventListener('click', function () {
-        window.location.href = 'https://facebook.com/';
-      });
-
-      document.querySelector('#btn-tiktok').addEventListener('click', function () {
-        window.location.href = 'https://tiktok.com/';
       });
     </script>
   </body>
