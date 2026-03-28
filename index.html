@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Recuerdo de Bautizo</title>
+    <title>Recuerdo de Evento Interactivo</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   </head>
@@ -10,18 +10,52 @@
       
       <a-assets>
         <video id="mivideo" src="./video.mp4" loop crossorigin="anonymous" playsinline></video>
+        
+        <img id="icono-whatsapp" src="whatsapp.png" crossorigin="anonymous">
+        <img id="icono-facebook" src="facebook.png" crossorigin="anonymous">
+        <img id="icono-tiktok" src="tiktok.png" crossorigin="anonymous">
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <a-entity cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-entity>
+      </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-video src="#mivideo" position="0 0 0" width="1" height="1.5" rotation="0 0 0"></a-video>
+        
+        <a-image id="btn-whatsapp" class="clickable" src="#icono-whatsapp" position="-0.35 -1.0 0.05" width="0.2" height="0.2" animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 800; loop: true"></a-image>
+
+        <a-image id="btn-facebook" class="clickable" src="#icono-facebook" position="0 -1.0 0.05" width="0.2" height="0.2" animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 800; loop: true"></a-image>
+
+        <a-image id="btn-tiktok" class="clickable" src="#icono-tiktok" position="0.35 -1.0 0.05" width="0.2" height="0.2" animation="property: scale; to: 1.1 1.1 1.1; dir: alternate; dur: 800; loop: true"></a-image>
       </a-entity>
     </a-scene>
 
     <script>
+      // Mantenemos tu lógica original para desbloquear el video al tocar la pantalla
       document.addEventListener("click", function() {
         document.querySelector("#mivideo").play();
+      });
+
+      // PASO 4: PROGRAMAMOS LA LÓGICA DE LOS ENLACES SOCIALES
+      
+      // WhatsApp
+      document.querySelector('#btn-whatsapp').addEventListener('click', function () {
+        // Reemplaza 'TU-NUMERO' con tu número completo (ej. 59163013102)
+        // Puedes añadir un mensaje predeterminado después de '?text='
+        window.location.href = 'https://wa.me/59163013102?text=¡Felicidades por el Logro!';
+      });
+
+      // Facebook
+      document.querySelector('#btn-facebook').addEventListener('click', function () {
+        // Reemplaza con la URL de tu perfil o página
+        window.location.href = 'https://facebook.com/TU-PERFIL';
+      });
+
+      // TikTok
+      document.querySelector('#btn-tiktok').addEventListener('click', function () {
+        // Reemplaza con la URL de tu perfil o el video del evento
+        window.location.href = 'https://tiktok.com/@TU-USUARIO';
       });
     </script>
   </body>
