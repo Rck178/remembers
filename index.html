@@ -1,67 +1,108 @@
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>Recuerdo Interactivo</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; }
+      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+      
+      /* Botón inicial para habilitar audio */
       #btn-iniciar {
-        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-        z-index: 9999; padding: 12px 24px; background: rgba(0,0,0,0.8); color: #D4AF37;
-        border: 1px solid #D4AF37; border-radius: 6px; font-family: serif; font-size: 16px;
+        position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+        z-index: 9999; padding: 15px 30px; background: rgba(0,0,0,0.85); color: #D4AF37;
+        border: 1px solid #D4AF37; border-radius: 8px; font-family: 'Georgia', serif; font-size: 16px;
+        cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      }
+
+      /* EL CONTENEDOR 2D DE TUS BOTONES (Se adapta a vertical y horizontal) */
+      #ui-interactiva {
+        position: absolute;
+        bottom: 30px; /* Separación desde abajo */
+        left: 0; width: 100%;
+        display: flex; justify-content: center; align-items: center; gap: 25px; /* Espacio entre botones */
+        z-index: 9998;
+        opacity: 0; pointer-events: none; /* Ocultos por defecto */
+        transition: opacity 0.5s ease-in-out; /* Aparición suave */
+      }
+
+      /* Cuando MindAR detecte la tarjeta, le agregamos esta clase para mostrarlos */
+      #ui-interactiva.visible {
+        opacity: 1; pointer-events: auto;
+      }
+
+      /* Estilo de los botones circulares usando tus imágenes PNG */
+      .btn-red-social {
+        width: 60px; height: 60px;
+        background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+        border: 2px solid #D4AF37; /* Borde dorado */
+        border-radius: 50%; /* Los hace redondos */
+        display: flex; justify-content: center; align-items: center;
         cursor: pointer;
+        transition: transform 0.2s; /* Pequeña animación al tocar */
+      }
+      
+      .btn-red-social:active { transform: scale(0.9); }
+      .btn-red-social img { width: 35px; height: 35px; object-fit: contain; }
+
+      /* Ajuste para pantallas horizontales (Landscape) */
+      @media screen and (orientation: landscape) {
+        #ui-interactiva {
+          bottom: 15px; /* En horizontal, los pegamos un poco más abajo para no tapar el video */
+          gap: 40px;
+        }
+        .btn-red-social { width: 50px; height: 50px; }
+        .btn-red-social img { width: 28px; height: 28px; }
       }
     </style>
-    
-    <script>
-      AFRAME.registerComponent('abrir-enlace', {
-        schema: { url: { default: '' } },
-        init: function () {
-          // Detecta el clic tradicional
-          this.el.addEventListener('click', () => {
-            window.location.href = this.data.url;
-          });
-          // Detecta el toque rápido en pantallas de celular (mucho más preciso)
-          this.el.addEventListener('touchstart', () => {
-            window.location.href = this.data.url;
-          });
-        }
-      });
-    </script>
   </head>
   <body>
     <button id="btn-iniciar">Tocar para Iniciar Experiencia</button>
 
+    <div id="ui-interactiva">
+      <div class="btn-red-social" onclick="window.location.href='https://wa.me/59177777777?text=¡Felicidades!'">
+        <img src="whatsapp.png" alt="WhatsApp">
+      </div>
+      <div class="btn-red-social" onclick="window.location.href='https://facebook.com/'">
+        <img src="facebook.png" alt="Facebook">
+      </div>
+      <div class="btn-red-social" onclick="window.location.href='https://tiktok.com/'">
+        <img src="tiktok.png" alt="TikTok">
+      </div>
+    </div>
+
     <a-scene mindar-image="imageTargetSrc: targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      
       <a-assets>
         <video id="mivideo" src="video.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
-        <img id="icono-whatsapp" src="whatsapp.png" crossorigin="anonymous">
-        <img id="icono-facebook" src="facebook.png" crossorigin="anonymous">
-        <img id="icono-tiktok" src="tiktok.png" crossorigin="anonymous">
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="objects: .clickable"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0">
+      <a-entity id="tarjeta-objetivo" mindar-image-target="targetIndex: 0">
         <a-video src="#mivideo" position="0 0 0" width="1" height="1.5" rotation="0 0 0"></a-video>
-        
-        <a-image class="clickable" src="#icono-whatsapp" position="-0.4 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://wa.me/59163013102?text=¡Felicidades por el Logro!"></a-image>
-        
-        <a-image class="clickable" src="#icono-facebook" position="0 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://facebook.com/"></a-image>
-        
-        <a-image class="clickable" src="#icono-tiktok" position="0.4 -1.0 0.1" width="0.25" height="0.25" abrir-enlace="url: https://tiktok.com/"></a-image>
       </a-entity>
     </a-scene>
 
     <script>
       const btnIniciar = document.querySelector("#btn-iniciar");
       const video = document.querySelector("#mivideo");
+      const uiInteractiva = document.querySelector("#ui-interactiva");
+      const tarjetaObjetivo = document.querySelector("#tarjeta-objetivo");
 
+      // 1. Desbloquear el video al inicio
       btnIniciar.addEventListener("click", function() {
         video.play();
         btnIniciar.style.display = "none";
+      });
+
+      // 2. LA MAGIA RESPONSIVA: Mostrar los botones SOLO cuando se ve la tarjeta
+      tarjetaObjetivo.addEventListener("targetFound", event => {
+        uiInteractiva.classList.add("visible");
+      });
+
+      // 3. Ocultar los botones si la cámara pierde de vista la tarjeta
+      tarjetaObjetivo.addEventListener("targetLost", event => {
+        uiInteractiva.classList.remove("visible");
       });
     </script>
   </body>
